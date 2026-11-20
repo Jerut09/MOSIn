@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#eef3f9" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="모바일 신분증" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/d/1-VbNtolV6kVW-H8dWRT2ga9M-LUv4pQD" />
+  <title>모바일 신분증</title>
+  <style>
+    :root {
+      --bg-outer: #d1d5db;
+      --bezel: #181a1f;
+      --ink-main: #1f2937;
+      --ink-sub: #4b5563;
+      --accent-blue: #2563eb;
+      --online-green: #22c55e;
+      --status-bar: #1a1c20;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", "Noto Sans KR", sans-serif;
+      user-select: none;
+    }
+
+    body {
+      min-height: 100vh;
+      background-color: var(--bg-outer);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .mobile-screen {
+      width: 100vw;
+      height: 100vh;
+      max-width: 430px;
+      background: linear-gradient(
+        180deg,
+        #e8f0f9 0%,
+        #eef3f9 48%,
+        #f2f4f7 100%
+      );
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    @media (min-width: 460px) {
+      .mobile-screen {
+        height: 840px;
+        border-radius: 40px;
+        border: 10px solid var(--bezel);
+        box-shadow: 0 24px 50px rgba(15, 23, 42, 0.25);
+      }
+    }
+
+    .bg-waves-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .bg-waves-svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .watermark-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      opacity: 0.14;
+    }
+
+    .watermark-symbol {
+      width: 270px;
+      height: 270px;
+      display: block;
+    }
+
+    .top-section {
+      padding: 14px 16px 2px;
+      z-index: 5;
+      position: relative;
+    }
+
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--ink-main);
+    }
+
+    .icon-btn {
+      background: none;
+      border: none;
+      font-size: 22px;
+      color: var(--ink-main);
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 8px;
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .bell-svg {
+      width: 21px;
+      height: 21px;
+      stroke: var(--ink-main);
+      fill: none;
+      stroke-width: 1.9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .noti-dot {
+      position: absolute;
+      top: 4px;
+      right: 7px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: #ef4444;
+    }
+
+    .header-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--ink-main);
+    }
+
+    .center-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      position: relative;
+      overflow: hidden;
+      padding-top: 6px;
+      z-index: 4;
+    }
+
+    .card-top-guides {
+      width: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 0;
+      margin-bottom: 42px;
+      padding: 0 4px;
+      z-index: 6;
+    }
+
+    .legal-btn {
+      background: none;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ink-sub);
+      cursor: pointer;
+    }
+
+    .q-circle {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background-color: #6b7280;
+      color: #ffffff;
+      font-size: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .shake-btn {
+      background: none;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ink-sub);
+      cursor: pointer;
+    }
+
+    .blue-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background-color: var(--accent-blue);
+      transition: background-color 0.2s ease;
+    }
+
+    .rotated-assembly {
+      transform: rotate(90deg) scale(0.94);
+      transform-origin: center center;
+      margin-top: 76px;
+      width: 440px;
+      display: flex;
+      flex-direction: column;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 18px 36px rgba(15, 23, 42, 0.2);
+      background-color: #ffffff;
+    }
+
+    .dl-card {
+      padding: 15px 18px 13px;
+      background:
+        radial-gradient(circle at 78% 42%, rgba(251, 191, 36, 0.14), transparent 36%),
+        radial-gradient(circle at 68% 65%, rgba(56, 189, 248, 0.16), transparent 48%),
+        radial-gradient(circle at 48% 85%, rgba(134, 239, 172, 0.14), transparent 45%),
+        linear-gradient(135deg, #f8fafc 0%, #f3f6fa 55%, #eef3f8 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-corner-logo {
+      position: absolute;
+      bottom: 10px;
+      left: 16px;
+      width: 34px;
+      height: 34px;
+      z-index: 2;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .card-corner-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .holo-sheen {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(
+        120deg,
+        transparent 30%,
+        rgba(59, 130, 246, 0.18) 46%,
+        rgba(16, 185, 129, 0.18) 54%,
+        transparent 70%
+      );
+      background-size: 220% 220%;
+      background-position: 50% 50%;
+    }
+
+    .dl-top {
+      display: grid;
+      grid-template-columns: 64px 1fr 64px;
+      align-items: baseline;
+      margin-bottom: 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .dl-class {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #374151;
+      letter-spacing: -0.2px;
+      text-align: left;
+    }
+
+    .dl-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: #111827;
+      letter-spacing: -0.3px;
+      text-align: center;
+    }
+
+    .dl-title span {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: #4b5563;
+      margin-left: 2px;
+    }
+
+    .dl-top-spacer {
+      height: 1px;
+    }
+
+    .dl-body {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .dl-photo-box {
+      width: 104px;
+      height: 132px;
+      border-radius: 3px;
+      background-color: #e5e7eb;
+      border: 1px solid #cbd5e1;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: #6b7280;
+      flex-shrink: 0;
+    }
+
+    .dl-photo-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .dl-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+    }
+
+    .dl-num {
+      font-size: 16.5px;
+      font-weight: 800;
+      color: #111827;
+      letter-spacing: 0.2px;
+      line-height: 1.25;
+      margin-bottom: 3px;
+    }
+
+    .dl-name-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .dl-name {
+      font-size: 15.5px;
+      font-weight: 700;
+      color: #111827;
+      line-height: 1.3;
+    }
+
+    .dl-birth {
+      font-size: 11px;
+      font-weight: 600;
+      color: #4b5563;
+    }
+
+    .blur-field {
+      filter: blur(4px);
+      transition: filter 0.2s ease;
+    }
+
+    .blur-field.show {
+      filter: none;
+    }
+
+    .dl-sub-blur {
+      font-size: 10.5px;
+      line-height: 1.38;
+      color: #374151;
+      margin-bottom: 6px;
+    }
+
+    .dl-bottom-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 10px;
+    }
+
+    .dl-left-col {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .dl-meta {
+      font-size: 10.5px;
+      line-height: 1.46;
+      color: #111827;
+    }
+
+    .dl-meta td:first-child {
+      color: #4b5563;
+      padding-right: 9px;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    .dl-meta td:last-child {
+      font-weight: 700;
+      color: #111827;
+    }
+
+    .dl-issuer {
+      margin-top: 7px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #111827;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .dl-right-marks {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .dl-mini-photo {
+      width: 35px;
+      height: 44px;
+      border-radius: 2px;
+      background-color: #e2e8f0;
+      border: 1px solid #cbd5e1;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      color: #64748b;
+    }
+
+    .dl-mini-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .dl-code-caption {
+      font-size: 8.5px;
+      font-weight: 700;
+      color: #374151;
+      letter-spacing: 0.4px;
+      margin-top: 1px;
+    }
+
+    .dl-stamp-wrap {
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+      margin-top: -6px;
+      padding-right: 4px;
+    }
+
+    .dl-stamp-box {
+      width: 40px;
+      height: 40px;
+      background-color: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .dl-stamp-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      mix-blend-mode: multiply;
+      display: block;
+    }
+
+    .west-online-bar {
+      background-color: var(--status-bar);
+      color: #ffffff;
+      padding: 7px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      font-size: 10.5px;
+      font-weight: 600;
+    }
+
+    .green-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background-color: var(--online-green);
+      box-shadow: 0 0 6px var(--online-green);
+    }
+
+    .bottom-bar {
+      background-color: rgba(255, 255, 255, 0.94);
+      border-top: 1px solid #e5e7eb;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding: 12px 8px 18px;
+      border-radius: 20px 20px 0 0;
+      z-index: 5;
+      position: relative;
+    }
+
+    .bar-btn {
+      background: none;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink-main);
+      cursor: pointer;
+      padding: 6px;
+    }
+
+    .bar-btn:first-child {
+      border-right: 1px solid #e5e7eb;
+    }
+
+    .bar-icon {
+      color: var(--accent-blue);
+      font-size: 17px;
+    }
+
+    .qr-modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background-color: rgba(15, 23, 42, 0.58);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 25;
+    }
+
+    .qr-modal-backdrop.open {
+      display: flex;
+    }
+
+    .qr-modal-sheet {
+      width: 100%;
+      background-color: #ffffff;
+      border-radius: 24px 24px 0 0;
+      padding: 20px 20px 26px;
+      box-shadow: 0 -12px 32px rgba(15, 23, 42, 0.25);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .qr-modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .qr-modal-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--ink-main);
+    }
+
+    .qr-close-btn {
+      background: #f3f4f6;
+      border: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ink-main);
+      cursor: pointer;
+    }
+
+    .qr-card-box {
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .qr-grid-canvas {
+      width: 176px;
+      height: 176px;
+      background-color: #ffffff;
+      border: 10px solid #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+      display: grid;
+      grid-template-columns: repeat(25, 1fr);
+      grid-template-rows: repeat(25, 1fr);
+    }
+
+    .qr-cell-dark {
+      background-color: #111827;
+    }
+
+    .qr-cell-light {
+      background-color: #ffffff;
+    }
+
+    .qr-timer-text {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent-blue);
+    }
+
+    .qr-meta-summary {
+      font-size: 11.5px;
+      color: var(--ink-sub);
+      text-align: center;
+      line-height: 1.45;
+      word-break: break-all;
+    }
+
+    .qr-action-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .qr-btn-primary {
+      background-color: var(--accent-blue);
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      padding: 11px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .qr-btn-secondary {
+      background-color: #eef2f7;
+      color: var(--ink-main);
+      border: none;
+      border-radius: 12px;
+      padding: 11px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .scan-view-box {
+      position: relative;
+      width: 100%;
+      height: 220px;
+      border-radius: 16px;
+      background-color: #111827;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #e5e7eb;
+      font-size: 12.5px;
+      text-align: center;
+      padding: 14px;
+    }
+
+    .scan-view-box video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+
+    .scan-view-box.streaming video {
+      display: block;
+    }
+
+    .scan-frame-guide {
+      position: absolute;
+      width: 148px;
+      height: 148px;
+      border: 2.5px solid #60a5fa;
+      border-radius: 16px;
+      box-shadow: 0 0 0 999px rgba(15, 23, 42, 0.35);
+      pointer-events: none;
+    }
+
+    .scan-result-box {
+      background-color: #f0fdf4;
+      border: 1px solid #86efac;
+      color: #166534;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 12px;
+      line-height: 1.45;
+      display: none;
+    }
+
+    .scan-result-box.visible {
+      display: block;
+    }
+
+    .toast-msg {
+      position: absolute;
+      bottom: 78px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(17, 24, 39, 0.9);
+      color: #ffffff;
+      font-size: 12px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+      white-space: nowrap;
+      z-index: 35;
+    }
+
+    .toast-msg.visible {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="mobile-screen">
+    <div class="bg-waves-layer" aria-hidden="true">
+      <svg class="bg-waves-svg" viewBox="0 0 430 840" preserveAspectRatio="none">
+        <path d="M0,0 L430,0 L430,190 C320,250 165,120 0,225 Z" fill="#dbe9f8" fill-opacity="0.72" />
+        <path d="M0,120 C145,210 275,95 430,175 L430,490 C285,540 135,410 0,480 Z" fill="#cde0f5" fill-opacity="0.45" />
+        <path d="M150,250 C275,210 370,295 430,360 L430,660 C310,635 215,535 150,250 Z" fill="#f5e6d3" fill-opacity="0.55" />
+        <path d="M0,620 C125,565 255,675 430,615 L430,840 L0,840 Z" fill="#cfd6df" fill-opacity="0.62" />
+        <path d="M0,695 C140,655 270,745 430,690 L430,840 L0,840 Z" fill="#9fb2c7" fill-opacity="0.34" />
+      </svg>
+    </div>
+
+    <div class="watermark-layer" aria-hidden="true">
+      <svg class="watermark-symbol" viewBox="0 0 512 512">
+        <path
+          d="M256 36 C134.5 36 36 134.5 36 256 C36 377.5 134.5 476 256 476 C332.2 476 399.5 437.3 438.9 378.6 C394.8 414.2 338.8 435 278 435 C189.6 435 118 363.4 118 275 C118 214.2 152.7 166.8 202.2 146.5 C239.4 131.2 271.5 162.8 271.5 198.5 C271.5 232.2 243.8 258.5 210.5 258.5 C193.5 258.5 178.5 247.2 174.5 231.5 C163.5 245.2 157 262.6 157 281.5 C157 325.7 192.8 361.5 237 361.5 C281.2 361.5 317 325.7 317 281.5 C317 234.5 275.5 203.5 275.5 157.5 C275.5 104.2 321.2 66 372 72.5 C336.5 48.2 297.8 36 256 36 Z"
+          fill="#0c345c"
+        />
+        <path
+          d="M372 72.5 C321.2 66 275.5 104.2 275.5 157.5 C275.5 186.8 290.8 210.5 307.5 233.5 C336.8 273.8 349.5 335.5 334 451 C398.5 422.5 446 359.5 453.5 283.5 C460.8 209.2 426.5 123.5 372 72.5 Z M354 118.5 C395.5 160.5 415.5 224.5 408.5 285.5 C403.5 329.5 384.2 368.5 356.5 397.5 C364.2 325.5 351.8 267.5 322.5 225.5 C307.8 204.5 296.5 183.5 296.5 159.5 C296.5 127.8 323.5 106.5 354 118.5 Z"
+          fill="#e11d38"
+        />
+      </svg>
+    </div>
+
+    <div class="top-section">
+      <header class="app-header">
+        <button class="icon-btn" onclick="notify('전체 메뉴가 열렸습니다.')">≡</button>
+        <span class="header-title">모바일 신분증</span>
+        <button class="icon-btn" onclick="notify('새 알림이 있습니다.')">
+          <svg class="bell-svg" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <span class="noti-dot"></span>
+        </button>
+      </header>
+    </div>
+
+    <main class="center-area">
+      <div class="card-top-guides">
+        <button class="legal-btn" onclick="notify('학습·테스트용 화면이며 법적 효력이 없습니다.')">
+          <span class="q-circle">?</span>
+          <span>법적 효력 &gt;</span>
+        </button>
+
+        <button class="shake-btn" onclick="toggleMask()">
+          <span id="shake-dot" class="blue-dot"></span>
+          <span>흔들기 설정</span>
+        </button>
+      </div>
+
+      <div class="rotated-assembly">
+        <section id="dl-card" class="dl-card">
+          <div id="cfg-corner-logo" class="card-corner-logo"></div>
+          <div id="holo-sheen" class="holo-sheen"></div>
+
+          <div class="dl-top">
+            <span id="cfg-class" class="dl-class">2종보통</span>
+            <h1 class="dl-title">자동차운전면허증 <span>(Driver's License)</span></h1>
+            <span class="dl-top-spacer" aria-hidden="true"></span>
+          </div>
+
+          <div class="dl-body">
+            <div id="cfg-photo-main" class="dl-photo-box"></div>
+
+            <div class="dl-info" onclick="toggleMask()" title="터치하여 블러 해제/적용">
+              <div id="cfg-lic-num" class="dl-num">18-72-338423-11</div>
+              <div class="dl-name-row">
+                <span id="cfg-name" class="dl-name">주명근</span>
+                <span id="cfg-birth" class="dl-birth">2009.06.09</span>
+              </div>
+              <div id="cfg-addr-blur" class="dl-sub-blur blur-field">
+                [RRN Omitted]<br />경기도 김포시 양곡로(양곡리)514 수아비스 702호
+              </div>
+
+              <div class="dl-bottom-row">
+                <div class="dl-left-col">
+                  <table class="dl-meta">
+                    <tr>
+                      <td>갱 신</td>
+                      <td id="cfg-renew-start">2028.07.01</td>
+                    </tr>
+                    <tr>
+                      <td>기 간 _</td>
+                      <td id="cfg-renew-end">2028.6.30</td>
+                    </tr>
+                    <tr>
+                      <td>조 건</td>
+                      <td id="cfg-cond">A</td>
+                    </tr>
+                  </table>
+
+                  <div class="dl-issuer">
+                    <span id="cfg-issue-date">2023.6.14</span>
+                    <span id="cfg-issuer">서울특별시경찰청</span>
+                  </div>
+                </div>
+
+                <div class="dl-right-marks">
+                  <div id="cfg-photo-mini" class="dl-mini-photo"></div>
+                  <div id="cfg-sub-code" class="dl-code-caption">8H1X3Y</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dl-stamp-wrap">
+            <div id="cfg-stamp" class="dl-stamp-box"></div>
+          </div>
+        </section>
+
+        <div class="west-online-bar">
+          <span class="green-dot"></span>
+          <span>온라인 상태</span>
+          <span>|</span>
+          <span id="clock-text">2026.11.20 23:42:00</span>
+        </div>
+      </div>
+    </main>
+
+    <footer class="bottom-bar">
+      <button class="bar-btn" onclick="openMyQrModal()">
+        <span class="bar-icon">▦</span>
+        <span>나의 QR</span>
+      </button>
+      <button class="bar-btn" onclick="openQrScanModal()">
+        <span class="bar-icon">⛶</span>
+        <span>QR 촬영</span>
+      </button>
+    </footer>
+
+    <div id="my-qr-modal" class="qr-modal-backdrop" onclick="handleBackdropClose(event, 'my')">
+      <div class="qr-modal-sheet">
+        <div class="qr-modal-head">
+          <span class="qr-modal-title">나의 QR (제출용 코드)</span>
+          <button class="qr-close-btn" onclick="closeMyQrModal()">✕</button>
+        </div>
+
+        <div class="qr-card-box">
+          <div id="qr-grid" class="qr-grid-canvas" aria-label="모바일 신분증 QR 코드"></div>
+          <div id="qr-timer" class="qr-timer-text">남은 시간 03:00</div>
+          <div id="qr-payload-text" class="qr-meta-summary"></div>
+        </div>
+
+        <div class="qr-action-row">
+          <button class="qr-btn-secondary" onclick="refreshMyQr()">QR 새로고침</button>
+          <button class="qr-btn-primary" onclick="closeMyQrModal()">닫기</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="qr-scan-modal" class="qr-modal-backdrop" onclick="handleBackdropClose(event, 'scan')">
+      <div class="qr-modal-sheet">
+        <div class="qr-modal-head">
+          <span class="qr-modal-title">QR 촬영 (신원 확인)</span>
+          <button class="qr-close-btn" onclick="closeQrScanModal()">✕</button>
+        </div>
+
+        <div id="scan-view-box" class="scan-view-box">
+          <video id="qr-video" playsinline autoplay muted></video>
+          <div class="scan-frame-guide"></div>
+          <span id="scan-status-msg">카메라 준비 중이거나 테스트 스캔을 사용할 수 있습니다.</span>
+        </div>
+
+        <div id="scan-result-box" class="scan-result-box"></div>
+
+        <div class="qr-action-row">
+          <button class="qr-btn-secondary" onclick="simulateQrScan()">샘플 QR 인식하기</button>
+          <button class="qr-btn-primary" onclick="closeQrScanModal()">닫기</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast-msg" class="toast-msg"></div>
+  </div>
+
+  <script>
+    const CARD_CONFIG = {
+      logoUrl: "https://lh3.googleusercontent.com/d/1-VbNtolV6kVW-H8dWRT2ga9M-LUv4pQD",
+      photoUrl: "https://lh3.googleusercontent.com/d/1GzZHc9tgfp-_ht4zXgPMoFuYIgYM1Mak",
+      stampUrl: "https://lh3.googleusercontent.com/d/1muwZ3W_mgsVbJ5wlxIvKyQATFe0dCr2K",
+      licenseClass: "2종보통",
+      licenseNumber: "18-72-338423-11",
+      name: "주명근",
+      birthDate: "2009.06.09",
+      addressText: "[RRN Omitted]<br />경기도 김포시 양곡로(양곡리)514 수아비스 702호",
+      renewStart: "2028.07.01",
+      renewEnd: "2028.6.30",
+      condition: "A",
+      issueDate: "2023.6.14",
+      issuer: "서울특별시경찰청",
+      miniCode: "8H1X3Y",
+      qrValidSeconds: 180
+    };
+
+    function renderImages() {
+      const cornerLogoEl = document.getElementById("cfg-corner-logo");
+      const mainPhotoEl = document.getElementById("cfg-photo-main");
+      const miniPhotoEl = document.getElementById("cfg-photo-mini");
+      const stampEl = document.getElementById("cfg-stamp");
+
+      if (CARD_CONFIG.logoUrl) {
+        cornerLogoEl.innerHTML = `<img src="${CARD_CONFIG.logoUrl}" alt="카드 로고" referrerpolicy="no-referrer" />`;
+      }
+      if (CARD_CONFIG.photoUrl) {
+        mainPhotoEl.innerHTML = `<img src="${CARD_CONFIG.photoUrl}" alt="증명사진" referrerpolicy="no-referrer" />`;
+        miniPhotoEl.innerHTML = `<img src="${CARD_CONFIG.photoUrl}" alt="보조사진" referrerpolicy="no-referrer" />`;
+      }
+      if (CARD_CONFIG.stampUrl) {
+        stampEl.innerHTML = `<img src="${CARD_CONFIG.stampUrl}" alt="직인" referrerpolicy="no-referrer" />`;
+      }
+    }
+
+    let maskShown = false;
+
+    function applyConfig() {
+      renderImages();
+      document.getElementById("cfg-class").textContent = CARD_CONFIG.licenseClass;
+      document.getElementById("cfg-lic-num").textContent = CARD_CONFIG.licenseNumber;
+      document.getElementById("cfg-name").textContent = CARD_CONFIG.name;
+      document.getElementById("cfg-birth").textContent = CARD_CONFIG.birthDate;
+      document.getElementById("cfg-addr-blur").innerHTML = CARD_CONFIG.addressText;
+      document.getElementById("cfg-renew-start").textContent = CARD_CONFIG.renewStart;
+      document.getElementById("cfg-renew-end").textContent = CARD_CONFIG.renewEnd;
+      document.getElementById("cfg-cond").textContent = CARD_CONFIG.condition;
+      document.getElementById("cfg-issue-date").textContent = CARD_CONFIG.issueDate;
+      document.getElementById("cfg-issuer").textContent = CARD_CONFIG.issuer;
+      document.getElementById("cfg-sub-code").textContent = CARD_CONFIG.miniCode;
+    }
+
+    function toggleMask() {
+      maskShown = !maskShown;
+      document.querySelectorAll(".blur-field").forEach((el) => {
+        el.classList.toggle("show", maskShown);
+      });
+      document.getElementById("shake-dot").style.backgroundColor = maskShown
+        ? "#22c55e"
+        : "#2563eb";
+      notify(maskShown ? "상세 정보가 표시됩니다." : "상세 정보가 가려졌습니다.");
+    }
+
+    function tickClock() {
+      const d = new Date();
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, "0");
+      const dd = String(d.getDate()).padStart(2, "0");
+      const hh = String(d.getHours()).padStart(2, "0");
+      const mi = String(d.getMinutes()).padStart(2, "0");
+      const ss = String(d.getSeconds()).padStart(2, "0");
+      document.getElementById("clock-text").textContent = `${yyyy}.${mm}.${dd} ${hh}:${mi}:${ss}`;
+    }
+
+    let qrNonce = 1;
+    let qrRemainingSec = CARD_CONFIG.qrValidSeconds;
+    let qrTimerId = null;
+
+    function isFinderCell(r, c, size) {
+      const boxes = [
+        [0, 0],
+        [0, size - 7],
+        [size - 7, 0]
+      ];
+      for (const [br, bc] of boxes) {
+        if (r >= br && r < br + 7 && c >= bc && c < bc + 7) {
+          const dr = r - br;
+          const dc = c - bc;
+          const onOuter = dr === 0 || dr === 6 || dc === 0 || dc === 6;
+          const onInner = dr >= 2 && dr <= 4 && dc >= 2 && dc <= 4;
+          return onOuter || onInner;
+        }
+      }
+      return null;
+    }
+
+    function buildQrMatrix(payloadText) {
+      const size = 25;
+      let hash = 2166136261;
+      for (let i = 0; i < payloadText.length; i++) {
+        hash ^= payloadText.charCodeAt(i);
+        hash = Math.imul(hash, 16777619);
+      }
+
+      const cells = [];
+      for (let r = 0; r < size; r++) {
+        for (let c = 0; c < size; c++) {
+          const finder = isFinderCell(r, c, size);
+          if (finder !== null) {
+            cells.push(finder);
+            continue;
+          }
+          const mix = (hash >>> ((r * 7 + c * 13) % 24)) ^ (r * 31 + c * 17 + qrNonce * 97);
+          cells.push((mix & 1) === 0);
+        }
+      }
+      return cells;
+    }
+
+    function formatTimer(sec) {
+      const m = String(Math.floor(sec / 60)).padStart(2, "0");
+      const s = String(sec % 60).padStart(2, "0");
+      return `${m}:${s}`;
+    }
+
+    function updateQrTimerLabel() {
+      document.getElementById("qr-timer").textContent = `남은 시간 ${formatTimer(qrRemainingSec)}`;
+    }
+
+    function renderMyQr() {
+      const payload = `MOBILE-ID|${CARD_CONFIG.licenseNumber}|${CARD_CONFIG.name}|${CARD_CONFIG.licenseClass}|#${qrNonce}`;
+      document.getElementById("qr-payload-text").textContent = `토큰 정보: ${payload}`;
+
+      const cells = buildQrMatrix(payload);
+      const gridEl = document.getElementById("qr-grid");
+      gridEl.innerHTML = cells
+        .map((dark) => `<div class="${dark ? "qr-cell-dark" : "qr-cell-light"}"></div>`)
+        .join("");
+
+      updateQrTimerLabel();
+    }
+
+    function startQrCountdown() {
+      clearInterval(qrTimerId);
+      qrTimerId = setInterval(() => {
+        if (qrRemainingSec > 0) {
+          qrRemainingSec -= 1;
+          updateQrTimerLabel();
+        } else {
+          refreshMyQr();
+        }
+      }, 1000);
+    }
+
+    function openMyQrModal() {
+      closeQrScanModal();
+      qrRemainingSec = CARD_CONFIG.qrValidSeconds;
+      renderMyQr();
+      startQrCountdown();
+      document.getElementById("my-qr-modal").classList.add("open");
+    }
+
+    function refreshMyQr() {
+      qrNonce += 1;
+      qrRemainingSec = CARD_CONFIG.qrValidSeconds;
+      renderMyQr();
+      startQrCountdown();
+      notify("새로운 QR 코드가 발급되었습니다.");
+    }
+
+    function closeMyQrModal() {
+      clearInterval(qrTimerId);
+      document.getElementById("my-qr-modal").classList.remove("open");
+    }
+
+    let activeStream = null;
+
+    async function startQrCamera() {
+      const viewBox = document.getElementById("scan-view-box");
+      const videoEl = document.getElementById("qr-video");
+      const statusMsg = document.getElementById("scan-status-msg");
+
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        statusMsg.textContent = "이 브라우저에서는 카메라 API가 제한됩니다. 아래 '샘플 QR 인식하기'를 눌러 테스트해 보세요.";
+        return;
+      }
+
+      try {
+        activeStream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: "environment" },
+          audio: false
+        });
+        videoEl.srcObject = activeStream;
+        viewBox.classList.add("streaming");
+        statusMsg.style.display = "none";
+      } catch (err) {
+        viewBox.classList.remove("streaming");
+        statusMsg.style.display = "block";
+        statusMsg.textContent = "카메라 권한이 없거나 장치를 찾을 수 없습니다. '샘플 QR 인식하기'로 스캔 결과를 확인해 보세요.";
+      }
+    }
+
+    function stopQrCamera() {
+      const viewBox = document.getElementById("scan-view-box");
+      const videoEl = document.getElementById("qr-video");
+      const statusMsg = document.getElementById("scan-status-msg");
+
+      if (activeStream) {
+        activeStream.getTracks().forEach((track) => track.stop());
+        activeStream = null;
+      }
+      videoEl.srcObject = null;
+      viewBox.classList.remove("streaming");
+      statusMsg.style.display = "block";
+    }
+
+    function openQrScanModal() {
+      closeMyQrModal();
+      document.getElementById("scan-result-box").classList.remove("visible");
+      document.getElementById("qr-scan-modal").classList.add("open");
+      startQrCamera();
+    }
+
+    function simulateQrScan() {
+      const resultBox = document.getElementById("scan-result-box");
+      resultBox.innerHTML =
+        `<strong>QR 인식 완료 (테스트)</strong><br />` +
+        `성명: ${CARD_CONFIG.name} · 종별: ${CARD_CONFIG.licenseClass}<br />` +
+        `면허번호: ${CARD_CONFIG.licenseNumber} · 발급청: ${CARD_CONFIG.issuer}`;
+      resultBox.classList.add("visible");
+      notify("샘플 QR 코드가 인식되었습니다.");
+    }
+
+    function closeQrScanModal() {
+      stopQrCamera();
+      document.getElementById("qr-scan-modal").classList.remove("open");
+    }
+
+    function handleBackdropClose(event, mode) {
+      if (event.target.id === "my-qr-modal" && mode === "my") {
+        closeMyQrModal();
+      } else if (event.target.id === "qr-scan-modal" && mode === "scan") {
+        closeQrScanModal();
+      }
+    }
+
+    let toastTimeout = null;
+    function notify(text) {
+      const el = document.getElementById("toast-msg");
+      el.textContent = text;
+      el.classList.add("visible");
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => el.classList.remove("visible"), 2000);
+    }
+
+    const card = document.getElementById("dl-card");
+    const sheen = document.getElementById("holo-sheen");
+    function moveSheen(x, y) {
+      const rect = card.getBoundingClientRect();
+      const px = ((x - rect.left) / rect.width) * 100;
+      const py = ((y - rect.top) / rect.height) * 100;
+      sheen.style.backgroundPosition = `${px}% ${py}%`;
+    }
+    card.addEventListener("mousemove", (e) => moveSheen(e.clientX, e.clientY));
+    card.addEventListener("touchmove", (e) => {
+      if (e.touches.length > 0) moveSheen(e.touches[0].clientX, e.touches[0].clientY);
+    });
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js").catch(() => {});
+      });
+    }
+
+    applyConfig();
+    tickClock();
+    setInterval(tickClock, 1000);
+  </script>
+</body>
+</html>
